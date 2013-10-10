@@ -1,20 +1,32 @@
-Usage: ./objcompress in.obj [out.utf8]
+Usage: ./objnormalize in.obj out.obj
 
-        If 'out' is specified, then attempt to write out a compressed,
-        UTF-8 version to 'out.'
+        "Normalize" an obj file. This simply shifts all vertices so that
+        the middle of the object is at (0,0,0). This is required for some
+        viewing environments such as the open-3d-viewer and the included
+        sample viewer.
+        
+Usage: ./objcompress [-w] in.obj out.utf8 >out.js
 
-        If not, write a JSON version to STDOUT.
+        Converts and compresses the OBJ file to the UTF8 format. The
+        necessary JavaScript file is output onto STDOUT. If -w is included
+        then all missing materials will be replaced with a bsaic solid
+        white material. If not provided, any missing materials will cause
+        the process to fail. The actual output file names are prepended
+        with a hash of the file data. This is because a single OBJ file
+        can include multiple models while an UTF8 file cannot.
 
-Usage: ./objanalyze in.obj [list of cache sizes]
-
-        Perform vertex cache analysis on in.obj using specified sizes.
-        For example: ./objanalyze in.obj 6 16 24 32
-        Maximum cache size is 32.
+objanalyze is non-functioning, other tools can be used for this purpose.
 
 Building:
 
 Since there are no external dependences outside of the C/C++ standard
-libraries, you can pretty much build this however you please. I've
-included a cheeky way to do this on POSIX-like systems by including a
+libraries, you can pretty much build this however you please. One compile
+option is using -D MINI_JS. When defined the output JavaScript will be
+minified.
+
+I've included a cheeky way to do this on POSIX-like systems by including a
 build shell script at the top of the file itself. You can build by
 making the .cc file executable, and running it on the command line.
+
+For Windows there is a build.bat script which will compile the code using
+mingw-w64. Make sure to have both the i686 and x86_64 builds installed.
