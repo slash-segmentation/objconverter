@@ -1,0 +1,19 @@
+<!doctype html>
+<html> <head>
+<title>UTF-8 Codepoint Decoding Tests</title>
+</head>
+
+<body>
+This tests UTF-8 decoding. Namely, it checks that all valid codepoints
+are properly decoded; even the ones that are illegal characters. The
+first test is the important one; this library  should only generate
+legal codepoints.<p>
+For completeness, a second test that includes the surrogate pair
+range [0xD800-0xDFFF] is also included. Interestingly, different
+browsers appear to have different policies with respect to
+substituting these illegal codepoints.
+<hr>
+<div id="test_output"></div>
+<script src="testing.js"></script>
+<script src="codepoints.js"></script>
+</body> </html>

@@ -1,0 +1,53 @@
+The easiest way to run these examples is to start a local webserver in
+this directory, like:
+
+$ python -m SimpleHTTPServer
+
+A working, but unrecommended, riskier alternative would be to run
+Chrome using --allow-file-access-from-files and navigating using
+the file:// protocol.
+
+There are some convenience scripts to regenerate the sample data (both
+here and in the testing/ subdirectory).
+
+To generate:
+
+$ ./gen.sh
+
+To clean:
+
+$ ./clean.sh
+
+These are not particularly well-written examples, but are
+functional. The most important part to pay attention to is the
+decoding function at the top of the ben.js and hand.js:
+
+function DecompressMesh(str) {
+  var num_verts = str.charCodeAt(0);
+  if (num_verts >= 0xE000) num_verts -= 0x0800;
+  num_verts++;
+
+  var attribs_out = new Float32Array(8 * num_verts);
+  var offset = 1;
+  for (var i = 0; i < 8; i++) {
+    var prev_attrib = 0;
+    for (var j = 0; j < num_verts; ++j) {
+      var code = str.charCodeAt(j + offset);
+      prev_attrib += (code >> 1) ^ (-(code & 1));
+      attribs_out[8*j + i] = prev_attrib;
+    }
+    offset += num_verts;
+  }
+
+  var num_indices = str.length - offset;
+  var indices_out = new Uint16Array(num_indices);
+  var index_high_water_mark = 0;
+  for (var i=0; i<num_indices; i++) {
+    var code = str.charCodeAt(i + offset);
+    indices_out[i] = index_high_water_mark - code;
+    if (code == 0) {
+      index_high_water_mark++;
+    }
+  }
+  return [attribs_out, indices_out];
+}

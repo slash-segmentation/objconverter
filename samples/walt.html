@@ -1,0 +1,62 @@
+<!doctype html>
+<html> <head>
+<link rel="stylesheet" type="text/css" href="samples.css">
+<title>WebGL Loader Samples</title>
+</head>
+<body>
+
+<canvas id="canvas" class="full"></canvas>
+<span class="backdrop full" style="z-Index:-2;"></span>
+
+<script id="SIMPLE_VERTEX_SHADER" type="text/x-vertex">
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform mat4 u_mvp;
+uniform mat3 u_model;
+
+attribute vec3 a_position;
+attribute vec2 a_texcoord;
+attribute vec3 a_normal;
+
+varying vec2 v_texcoord;
+varying vec3 v_normal;
+
+void main(void) {
+   v_texcoord = a_texcoord;
+   v_normal = u_model * a_normal;
+   gl_Position = u_mvp * vec4(a_position, 1.0);
+}
+</script>
+
+<script id="SIMPLE_FRAGMENT_SHADER" type="text/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform sampler2D u_diffuse_sampler;
+
+varying vec2 v_texcoord;
+varying vec3 v_normal;
+
+void main(void) {
+    // Simple, soft directional lighting.
+    vec3 fetch = texture2D(u_diffuse_sampler, v_texcoord).rgb;
+    vec3 normal = normalize(v_normal);
+    vec3 light_vec = normalize(vec3(-0.25, -0.25, 1.0));
+    float light = 0.5 + 0.5*dot(normal, light_vec);
+    gl_FragData[0] = vec4(light*light*fetch, 1.0);
+}
+</script>
+
+<script type="text/javascript" src="gl-matrix-min.js"></script>
+
+<script type="text/javascript" src="base.js"></script>
+<script type="text/javascript" src="webgl.js"></script>
+<script type="text/javascript" src="loader.js"></script>
+<script type="text/javascript" src="renderer.js"></script>
+<script type="text/javascript" src="samples.js"></script>
+<script type="text/javascript" src="walt.js"></script>
+
+</body></html>
